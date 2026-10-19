@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#04110c" />
+  <title>تنبيه أمني — وعي بالتصيّد الاحتيالي</title>
+
+  <!-- Google Font: Cairo (only allowed external resource) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800;900&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ====== الخلفية: أحرف خضراء متساقطة ====== -->
+  <canvas id="matrix" aria-hidden="true"></canvas>
+  <div class="scanlines" aria-hidden="true"></div>
+
+  <!-- ====== 1) شاشة البداية ====== -->
+  <main class="stage" id="stage">
+
+    <section class="screen screen--loading is-active" id="screenLoading">
+      <div class="logo-wrap">
+        <img src="logo.png" alt="شعار الجهة" class="logo" id="logo" />
+        <!-- بديل يظهر تلقائيًا إن لم يوجد ملف logo.png -->
+        <span class="logo-fallback" id="logoFallback" aria-hidden="true">🛡️</span>
+        <span class="logo-glow" aria-hidden="true"></span>
+      </div>
+
+      <p class="loading-text" id="loadingText">جاري اختراق جهازك... <span id="percent">0%</span></p>
+
+      <div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progressBar">
+        <div class="progress__fill" id="progressFill"></div>
+      </div>
+      <p class="hint">لا تغلق الصفحة… (مزحة 😅)</p>
+    </section>
+
+    <!-- ====== 2) شاشة النتيجة ====== -->
+    <section class="screen screen--result" id="screenResult">
+
+      <h1 class="glitch" data-text="😱 تم اختراقك!">😱 تم اختراقك!</h1>
+
+      <p class="funny">هذه المرة كان مجرد QR... المرة القادمة قد لا يكون مزحة 😅</p>
+
+      <!-- بطاقة النصائح -->
+      <section class="card" aria-labelledby="tipsTitle">
+        <h2 class="card__title" id="tipsTitle">
+          لا تقلق، لم نأخذ أي بيانات منك! لكن هكذا يبدأ التصيد الاحتيالي:
+        </h2>
+
+        <ul class="tips" id="tips">
+          <li class="tip" style="--i:0"><span class="tip__icon">🚫</span><span class="tip__text">لا تمسح أي رمز QR من مصدر مجهول</span></li>
+          <li class="tip" style="--i:1"><span class="tip__icon">🔗</span><span class="tip__text">تحقق من الرابط قبل أن تفتحه</span></li>
+          <li class="tip" style="--i:2"><span class="tip__icon">🔑</span><span class="tip__text">لا تُدخل كلمة المرور في صفحة وصلتك عبر رسالة</span></li>
+          <li class="tip" style="--i:3"><span class="tip__icon">🛡️</span><span class="tip__text">فعّل التحقق بخطوتين (2FA)</span></li>
+          <li class="tip" style="--i:4"><span class="tip__icon">🧑‍💻</span><span class="tip__text">إذا شككت، اسأل فريق الأمن قبل أن تضغط</span></li>
+        </ul>
+      </section>
+
+      <button class="btn-replay" id="replayBtn" type="button">العب مرة ثانية 🔄</button>
+
+      <p class="disclaimer">عرض توعوي فقط — لا يتم جمع أي بيانات.</p>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

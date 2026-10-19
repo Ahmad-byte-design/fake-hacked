@@ -1,0 +1,349 @@
+/* =========================================================
+   تنبيه أمني — صفحة وعي بالتصيّد الاحتيالي
+   الألوان: متغيّرات CSS في الأعلى لتغيير الهوية كاملة
+   ========================================================= */
+
+:root {
+  /* --- غيّر هذه القيم لتغيير الألوان --- */
+  --green: #00ff9c;          /* الأخضر النيون الأساسي */
+  --green-dark: #00c97b;
+  --cyan: #22d3ee;           /* السماوي */
+  --bg: #04110c;             /* خلفية شبه سوداء */
+  --text: #e8fff5;
+  --muted: #8fb8a8;
+  --card: rgba(6, 26, 20, 0.72);
+  --border: rgba(0, 255, 156, 0.22);
+
+  --radius: 22px;
+  --speed: 4s;               /* مدة عدّاد التحميل */
+}
+
+/* ============ الأساسيات ============ */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  min-height: 100svh;
+  font-family: "Cairo", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+  display: flex;
+  justify-content: center;
+  padding: clamp(12px, 4vw, 40px);
+}
+
+/* توهّج خلفي ناعم */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  background:
+    radial-gradient(70% 55% at 50% 0%, rgba(0, 255, 156, 0.16), transparent 70%),
+    radial-gradient(60% 50% at 85% 100%, rgba(34, 211, 238, 0.12), transparent 70%);
+}
+
+/* ============ كانفس الأحرف المتساقطة ============ */
+#matrix {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+/* خطوط شاشة CRT خفيفة */
+.scanlines {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0) 0 3px,
+    rgba(0, 0, 0, 0.22) 3px 4px
+  );
+}
+
+/* ============ المسرح والشاشات ============ */
+.stage {
+  width: 100%;
+  max-width: 720px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.screen { display: none; width: 100%; }
+.screen.is-active { display: flex; flex-direction: column; align-items: center; }
+
+/* ============ 1) شاشة التحميل ============ */
+.screen--loading { gap: clamp(18px, 5vw, 28px); text-align: center; }
+
+.logo-wrap {
+  position: relative;
+  width: clamp(120px, 34vw, 190px);
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  animation: float 3.5s ease-in-out infinite;
+}
+
+.logo {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 0 14px rgba(0, 255, 156, 0.45));
+}
+
+/* توهّج ناعم خلف الشعار */
+.logo-glow {
+  position: absolute;
+  inset: -25%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0, 255, 156, 0.35), transparent 65%);
+  filter: blur(12px);
+  z-index: -1;
+  animation: pulse 2.4s ease-in-out infinite;
+}
+
+/* بديل أنيق إن لم يوجد ملف الشعار */
+.logo-fallback {
+  display: none;
+  width: 100%;
+  height: 100%;
+  place-items: center;
+  font-size: clamp(3rem, 16vw, 4.4rem);
+  border-radius: 28px;
+  background: rgba(0, 255, 156, 0.08);
+  border: 2px dashed rgba(0, 255, 156, 0.45);
+}
+.logo.is-missing { display: none; }
+.logo.is-missing ~ .logo-fallback { display: grid; }
+
+.loading-text {
+  font-size: clamp(1.05rem, 4.6vw, 1.5rem);
+  font-weight: 700;
+  color: var(--green);
+  text-shadow: 0 0 12px rgba(0, 255, 156, 0.55);
+}
+
+#percent {
+  font-variant-numeric: tabular-nums;
+  direction: ltr;          /* حتى تظهر "9%" وليس "%9" */
+  unicode-bidi: isolate;
+  display: inline-block;
+}
+
+.progress {
+  width: min(100%, 460px);
+  height: 16px;
+  border-radius: 999px;
+  background: rgba(0, 255, 156, 0.1);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.progress__fill {
+  height: 100%;
+  width: 0%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--green-dark), var(--green), var(--cyan));
+  box-shadow: 0 0 18px rgba(0, 255, 156, 0.6);
+  transition: width 0.12s linear;
+}
+
+.hint { color: var(--muted); font-size: clamp(0.8rem, 3.4vw, 1rem); }
+
+/* ============ 2) شاشة النتيجة ============ */
+.screen--result { gap: clamp(16px, 4.5vw, 26px); text-align: center; }
+
+/* عنوان مع تأثير الخلل (glitch) */
+.glitch {
+  position: relative;
+  font-size: clamp(2rem, 11vw, 4rem);
+  font-weight: 900;
+  line-height: 1.25;
+  color: #fff;
+  text-shadow: 0 0 22px rgba(0, 255, 156, 0.55);
+  animation: glitch-anim 0.55s steps(2, end) 3;
+}
+
+.glitch::before,
+.glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  background: var(--bg);
+  overflow: hidden;
+  opacity: 0.85;
+}
+
+.glitch::before { color: var(--green); animation: glitch-a 0.55s steps(2, end) 3; }
+.glitch::after  { color: var(--cyan);  animation: glitch-b 0.55s steps(2, end) 3; }
+
+.funny {
+  font-size: clamp(1rem, 4.4vw, 1.35rem);
+  font-weight: 600;
+  color: var(--cyan);
+  max-width: 34ch;
+  animation: rise 0.6s ease both 0.25s;
+}
+
+/* ============ بطاقة النصائح ============ */
+.card {
+  width: 100%;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: clamp(18px, 5vw, 30px);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  animation: rise 0.6s ease both 0.35s;
+}
+
+.card__title {
+  font-size: clamp(1rem, 4.2vw, 1.25rem);
+  font-weight: 800;
+  line-height: 1.6;
+  margin-bottom: clamp(14px, 4vw, 20px);
+  color: var(--green);
+}
+
+.tips { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+
+.tip {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: rgba(0, 255, 156, 0.06);
+  border: 1px solid rgba(0, 255, 156, 0.14);
+  font-size: clamp(0.95rem, 4vw, 1.1rem);
+  font-weight: 600;
+  line-height: 1.55;
+  text-align: right;
+  opacity: 0;
+  animation: rise 0.55s ease both;
+  animation-delay: calc(0.5s + var(--i) * 0.13s);
+}
+
+.tip__icon {
+  flex: 0 0 auto;
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  font-size: 1.35rem;
+  border-radius: 50%;
+  background: rgba(34, 211, 238, 0.12);
+  border: 1px solid rgba(34, 211, 238, 0.3);
+}
+
+.tip__text { flex: 1; }
+
+/* ============ الزر ============ */
+.btn-replay {
+  font-family: inherit;
+  font-size: clamp(1rem, 4.2vw, 1.2rem);
+  font-weight: 800;
+  color: #04110c;
+  background: linear-gradient(135deg, var(--green), var(--cyan));
+  border: none;
+  border-radius: 999px;
+  padding: 16px 34px;
+  cursor: pointer;
+  box-shadow: 0 10px 30px rgba(0, 255, 156, 0.35);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
+  animation: rise 0.6s ease both 1.25s;
+}
+
+.btn-replay:hover { transform: translateY(-2px) scale(1.03); box-shadow: 0 14px 38px rgba(0, 255, 156, 0.5); }
+.btn-replay:active { transform: scale(0.97); filter: brightness(0.92); }
+.btn-replay:focus-visible { outline: 3px solid var(--cyan); outline-offset: 4px; }
+
+.disclaimer { color: var(--muted); font-size: clamp(0.75rem, 3.2vw, 0.9rem); }
+
+/* ============ الحركات ============ */
+@keyframes rise {
+  from { opacity: 0; transform: translateY(22px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-10px); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.55; transform: scale(1); }
+  50%      { opacity: 1;    transform: scale(1.1); }
+}
+
+@keyframes glitch-anim {
+  0%, 100% { transform: translate(0); }
+  20%      { transform: translate(-3px, 2px) skewX(-6deg); }
+  40%      { transform: translate(3px, -2px) skewX(6deg); }
+  60%      { transform: translate(-2px, -1px); }
+  80%      { transform: translate(2px, 1px); }
+}
+
+@keyframes glitch-a {
+  0%, 100% { clip-path: inset(100% 0 0 0); transform: none; }
+  20%      { clip-path: inset(12% 0 72% 0); transform: translate(-6px, -2px); }
+  40%      { clip-path: inset(58% 0 26% 0); transform: translate(6px, 2px); }
+  60%      { clip-path: inset(32% 0 52% 0); transform: translate(-4px, 1px); }
+  80%      { clip-path: inset(76% 0 8% 0);  transform: translate(5px, -1px); }
+}
+
+@keyframes glitch-b {
+  0%, 100% { clip-path: inset(100% 0 0 0); transform: none; }
+  20%      { clip-path: inset(66% 0 18% 0); transform: translate(6px, 2px); }
+  40%      { clip-path: inset(18% 0 68% 0); transform: translate(-6px, -2px); }
+  60%      { clip-path: inset(44% 0 40% 0); transform: translate(4px, -1px); }
+  80%      { clip-path: inset(8% 0 82% 0);  transform: translate(-5px, 1px); }
+}
+
+/* وميض الشاشة عند لحظة "الاختراق" */
+body.hacked .screen.is-active {
+  animation: hack-flash 0.5s ease;
+}
+@keyframes hack-flash {
+  0%, 100% { filter: none; }
+  25%      { filter: invert(1) hue-rotate(90deg); }
+  50%      { filter: none; }
+  75%      { filter: invert(1) hue-rotate(-60deg); }
+}
+
+/* ============ الاستجابة ============ */
+@media (min-width: 900px) {
+  .card { padding: 34px; }
+  .tip { padding: 15px 18px; }
+}
+
+@media (max-width: 360px) {
+  .tip__icon { width: 36px; height: 36px; font-size: 1.15rem; }
+  .btn-replay { padding: 14px 26px; }
+}
+
+/* ============ تقليل الحركة ============ */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+  .screen--result .tip,
+  .funny,
+  .card,
+  .btn-replay { opacity: 1 !important; }
+  #matrix { display: none; }
+  .glitch::before, .glitch::after { display: none; }
+  .logo-glow { animation: none; }
+}
