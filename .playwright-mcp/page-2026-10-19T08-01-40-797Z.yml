@@ -1,7 +1,0 @@
-- main [ref=e2]:
-  - generic [ref=e3]:
-    - img "شعار الجهة" [ref=e5]
-    - paragraph [ref=e7]: جاري اختراق جهازك... 10%
-    - progressbar [ref=e8]
-    - paragraph [ref=e9]: لا تغلق الصفحة… (مزحة 😅)
-  - text: 😱 تم اختراقك! 😱 تم اختراقك!

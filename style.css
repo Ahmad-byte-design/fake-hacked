@@ -215,6 +215,13 @@ body::before {
   color: var(--green);
 }
 
+.card__note {
+  margin-top: clamp(12px, 3vw, 16px);
+  font-size: clamp(0.85rem, 3.6vw, 1rem);
+  color: var(--muted);
+  line-height: 1.5;
+}
+
 .tips { list-style: none; display: flex; flex-direction: column; gap: 10px; }
 
 .tip {
