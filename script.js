@@ -10,7 +10,7 @@
   var logoEl     = document.getElementById("logo");
   var screenLoad = document.getElementById("screenLoading");
   var screenRes  = document.getElementById("screenResult");
-  var replayBtn  = document.getElementById("replayBtn");
+  // var replayBtn  = document.getElementById("replayBtn");
 
   var DURATION = 4000;
   var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -166,11 +166,11 @@
   /* =======================================================
      5) إعادة التشغيل
      ======================================================= */
-  replayBtn.addEventListener("click", function () {
-    window.scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" });
-    showScreen(screenLoad);
-    setTimeout(runFakeHacking, 220);
-  });
+  // replayBtn.addEventListener("click", function () {
+  //   window.scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" });
+  //   showScreen(screenLoad);
+  //   setTimeout(runFakeHacking, 220);
+  // });
 
   // ابدأ
   runFakeHacking();
